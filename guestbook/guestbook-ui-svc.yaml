@@ -30,7 +30,9 @@ kind: Ingress
 metadata:
   name: guestbook-ui
   annotations:
-    kubernetes.io/ingress.class: "traefik"
+    kubernetes.io/ingress.class: "traefik"  # Ensure Traefik is watching this Ingress
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   tls:
     - secretName: guestbook-ui-certificate
@@ -44,5 +46,6 @@ spec:
               service:
                 name: guestbook-ui
                 port:
-                  name: http
+                  number: 80
+
 
