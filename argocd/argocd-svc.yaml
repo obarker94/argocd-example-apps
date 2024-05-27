@@ -1,0 +1,36 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd
+spec:
+  dnsNames:
+    - argocd.rolec-test.app
+  privateKey:
+    algorithm: ECDSA 
+    size: 256
+  secretName: argocd-certificate
+  issuerRef:
+    kind: ClusterIssuer
+    name: ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd
+spec:
+  tls:
+    - hosts:
+        - argocd.rolec-test.app
+      secretName: argocd-certificate
+  rules:
+    - host: argocd.rolec-test.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  name: http  
+
