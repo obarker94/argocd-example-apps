@@ -31,10 +31,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: guestbook-ui
-  annotations:
-    kubernetes.io/ingress.class: "traefik"
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   tls:
     - hosts:
@@ -50,5 +46,5 @@ spec:
               service:
                 name: guestbook-ui
                 port:
-                  name: http  # This should match the name in the Service definition
+                  name: http  
 
