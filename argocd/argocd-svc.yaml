@@ -1,38 +1,25 @@
-apiVersion: cert-manager.io/v1
-kind: Certificate
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: argocd
+  name: argocd-server
   namespace: argocd
 spec:
-  dnsNames:
-    - argocd.rolec-test.app
-  privateKey:
-    algorithm: ECDSA 
-    size: 256
-  secretName: argocd-certificate
-  issuerRef:
-    kind: ClusterIssuer
-    name: ingress
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: argocd
-  namespace: argocd
-spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`argocd.rolec-test.app`)
+      priority: 10
+      services:
+        - name: argocd-server
+          port: 80
+    - kind: Rule
+      match: Host(`argocd.rolec-test.app`) && Headers(`Content-Type`, `application/grpc`)
+      priority: 11
+      services:
+        - name: argocd-server
+          port: 80
+          scheme: h2c
   tls:
-    - hosts:
-        - argocd.rolec-test.app
-      secretName: argocd-certificate
-  rules:
-    - host: argocd.rolec-test.app
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: argocd-server
-                port:
-                  name: http  
+    certResolver: default
 
