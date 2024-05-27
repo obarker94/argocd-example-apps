@@ -12,9 +12,14 @@ spec:
     metadata:
       labels:
         app: guestbook-ui
+        azure.workload.identity/use: "true"
+
     spec:
+      serviceAccountName: toot
+      enableServiceLinks: false
       containers:
       - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
         name: guestbook-ui
         ports:
         - containerPort: 80
+
