@@ -37,5 +37,7 @@ spec:
           port: 80
           scheme: h2c
   tls:
-    certResolver: default
+    - hosts:
+        - argocd.rolec-test.app
+      secretName: argocd-certificate
 
