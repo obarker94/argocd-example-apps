@@ -7,6 +7,8 @@ spec:
   ports:
   - port: 80
     targetPort: 80
+    protocol: TCP
+    name: http  # Ensure this name matches the name used in the Ingress
   selector:
     app: guestbook-ui
 ---
@@ -30,12 +32,14 @@ kind: Ingress
 metadata:
   name: guestbook-ui
   annotations:
-    kubernetes.io/ingress.class: "traefik"  # Ensure Traefik is watching this Ingress
+    kubernetes.io/ingress.class: "traefik"
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
   tls:
-    - secretName: guestbook-ui-certificate
+    - hosts:
+        - guestbook-ui.rolec-test.app
+      secretName: guestbook-ui-certificate
   rules:
     - host: guestbook-ui.rolec-test.app
       http:
@@ -46,6 +50,5 @@ spec:
               service:
                 name: guestbook-ui
                 port:
-                  number: 80
-
+                  name: http  # This should match the name in the Service definition
 
