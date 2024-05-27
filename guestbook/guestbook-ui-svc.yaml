@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -8,3 +9,38 @@ spec:
     targetPort: 80
   selector:
     app: guestbook-ui
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: guestbook-ui
+spec:
+  dnsNames:
+    - guestbook-ui.rolec-test.app
+  privateKey:
+    algorithm: ECDSA 
+    size: 256
+  secretName: guestbook-ui-certificate
+  issuerRef:
+    kind: ClusterIssuer
+    name: ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: guestbook-ui
+spec:
+  tls:
+    - secretName: guestbook-ui-certificate
+  rules:
+    - host: guestbook-ui.rolec-test.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: guestbook-ui
+                port:
+                  name: http
+
